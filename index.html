@@ -11,7 +11,7 @@
         <div>
             <button id="btnCargar">Cargar Imagen</button>
             <button id="btnEnviar">Enviar Imagen</button>
-            <input type="file"></input>
+            <input type="file" id="archivoEnviar" accept="image/*"></input>
         </div>
             
         <div id="progreso" >
@@ -31,7 +31,8 @@
         const etiqueta = document.querySelector('#progreso__etiqueta');
         const cargar =  document.querySelector('#btnCargar');
         const imagen =  document.querySelector('#imagen');
-        const enviar =  document.querySelector('#btnCargar');
+        const enviar =  document.querySelector('#btnEnviar');
+        const archivoEnviar =  document.querySelector('#archivoEnviar');
 
 
         const cargarImagen = async function () {
@@ -66,11 +67,50 @@
         }
         
         const enviarImagen = function(){
+                
+            const archivo = archivoEnviar.files[0]; 
+            if(typeof archivo === undefined){ return }
+
+            //Inicializa la información en pantalla 
+            progreso.style.visibility = 'visible'; 
+            barra.removeAttribute('value')
+            barra.textContent = '0%';
+            etiqueta.textContent = 'conectando...';
+
+
+            // Petición y contenido
+            let uploadForm = new FormData()
+            uploadForm.append('file', archivo);
+            let request = new XMLHttpRequest();
             
+            request.open('POST', 'http://127.0.0.1:5500/');
+
+            // Seguimietno de Avance
+            request.upload.addEventListener('progress', event => {
+
+                const porcentaje = Math.round(event.loaded/event.total * 100);
+
+                barra.value = porcentaje;
+                barra.textContent = porcentaje + '%';
+                etiqueta.textContent = porcentaje + '%';
+
+            });
+
+            // The following code will execute when the request is complete
+            request.onreadystatechange = () => {
+                if (request.readyState == 4 && request.status == 200) {
+                    // Output the response message
+                    console.log( request.responseText);
+                }
+                console.log({request})
+            };
+            // Execute request
+            request.send(uploadForm); console.log({request})
+
         }
 
         cargar.addEventListener('click', cargarImagen);
-        //enviar.addEventListener('click', enviarImagen);
+        enviar.addEventListener('click', enviarImagen);
       
       </script>
   </body>

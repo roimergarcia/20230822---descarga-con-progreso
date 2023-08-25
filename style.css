@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+main{
+    margin: 1em;
+}
+#btnCargar, #btnEnviar{
+    padding: 1em;
+    margin: 1em;
+}
+#progreso{
+    display: flex;
+    visibility: hidden;
+    align-items: baseline;
+}
+#progreso__etiqueta {
+    font-size: 1.5rem;
+    padding: 10px;
+}
+
+img {
+    display: block;
+    margin: 0px auto;
+    height: 300px;
+    width: auto;
+}

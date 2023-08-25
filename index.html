@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descarga con Progreso</title>
+    <link href="style.css" rel="stylesheet"></link>
+</head>
+<body>
+    <main>
+        <div>
+            <button id="btnCargar">Cargar Imagen</button>
+            <button id="btnEnviar">Enviar Imagen</button>
+            <input type="file"></input>
+        </div>
+            
+        <div id="progreso" >
+            <progress id="progreso__barra" max="100">0%</progress>
+            <label id="progreso__etiqueta" for="progreso__barra">conectando...</label>
+        </div>
+        <img id="imagen" src="">
+    </main>
+ 
+    </div>
+    
+    <script type="module">
+        import {cargarArchivo} from "./script.js"
+
+        const progreso = document.querySelector('#progreso');
+        const barra = document.querySelector('#progreso__barra');
+        const etiqueta = document.querySelector('#progreso__etiqueta');
+        const cargar =  document.querySelector('#btnCargar');
+        const imagen =  document.querySelector('#imagen');
+        const enviar =  document.querySelector('#btnCargar');
+
+
+        const cargarImagen = async function () {
+
+            //Inicializa la información en pantalla 
+            progreso.style.visibility = 'visible'; 
+            barra.removeAttribute('value')
+            barra.textContent = '0%';
+            etiqueta.textContent = 'conectando...';
+
+            const respuesta = await fetch('https://picsum.photos/800/800');
+            if (respuesta.status === 200){//OK
+
+                const archivo = await cargarArchivo( respuesta, (avance, totalBytes) =>{    
+
+                    const porcentaje = Math.round(avance / totalBytes * 100);
+
+                    barra.value = porcentaje;
+                    barra.textContent = porcentaje + '%';
+                    etiqueta.textContent = porcentaje + '%';
+
+                });
+                //console.log({archivo})
+                imagen.src = URL.createObjectURL(archivo); 
+            } else {
+                barra.value = 0;
+                barra.textContent = '0%';
+                etiqueta.textContent = 'coneccion fallida';
+            }
+            
+
+        }
+        
+        const enviarImagen = function(){
+            
+        }
+
+        cargar.addEventListener('click', cargarImagen);
+        //enviar.addEventListener('click', enviarImagen);
+      
+      </script>
+  </body>
+</html>
